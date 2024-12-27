@@ -8,19 +8,18 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * @deprecated no need company table.
      *
      * @return void
      */
     public function up()
     {
-        Schema::create('failed_jobs', function (Blueprint $table) {
+        Schema::create('car_companies', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->unique();
-            $table->text('connection');
-            $table->text('queue');
-            $table->longText('payload');
-            $table->longText('exception');
-            $table->timestamp('failed_at')->useCurrent();
+            $table->string("title")->comment("汽车公司名称");
+            $table->string("description")->comment("汽车公司描述");
+            $table->string("short_name")->comment("汽车公司简称");
+            $table->timestamps();
         });
     }
 
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('failed_jobs');
+        Schema::dropIfExists('car_companies');
     }
 };
