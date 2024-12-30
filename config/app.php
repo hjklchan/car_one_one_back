@@ -175,6 +175,14 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * 配置laravel-wechat
+         * */
+        Overtrue\LaravelWeChat\ServiceProvider::class,
+        Overtrue\LaravelSocialite\ServiceProvider::class,
+
+
+
     ],
 
     /*

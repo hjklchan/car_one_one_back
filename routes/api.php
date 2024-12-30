@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CarBrandController;
 use App\Http\Controllers\MemberController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,3 +26,13 @@ Route::post('/member/register',[MemberController::class, 'register']);
 Route::delete('/member/destroy/{id}',[MemberController::class, 'destroy']);
 //手机号登录
 Route::post('/member/login',[MemberController::class, 'phoneLogin']);
+//获取所有用户信息
+Route::get('/user/profile',[MemberController::class, 'getUserInfo']);
+//获取汽车品牌列表
+Route::get('/carBrandSeries/optionList',[CarBrandController::class,'findAll']);
+//获取汽车品牌旗下的系列
+Route::get('carBrandSeries/optionList/{brandId}',[CarBrandController::class,'findSeries'])
+    ->where('brandId','[0-9]+');
+//微信登录
+Route::get('/user/login/wechatAuthorization/{$temporaryCode}',[MemberController::class, 'wechatLogin']);
+

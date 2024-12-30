@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CarBrandsSeries extends Model
+class CarBrandSeries extends Model
 {
-    protected $table = 'car_brands_series';
+    protected $table = 'car_brand_series';
     protected $primaryKey = 'series_id';
     protected $fillable = [
         'brand_id',

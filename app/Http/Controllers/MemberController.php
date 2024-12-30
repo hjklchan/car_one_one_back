@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MemberBinds;
 use App\Models\Members;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -9,6 +10,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Http;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 
 /*
  * 用户控制器
@@ -100,5 +104,68 @@ class MemberController extends Controller
             'status' => 'success',
             'message' => '登陆成功'
         ],200);
+    }
+    // 获取所有用户信息
+    public function getUserInfo()
+    {
+        $user = Members::find();
+        return response()->json([
+            'status' => 'success',
+            'data' => $user
+        ],200);
+    }
+
+    //用户的微信的登录
+    public function wechatLogin($temporaryCode)
+    {
+        //生成open_id
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid={wxcc01f485388c335b}&secret={bc2b97a7451a259f1ce7779dd24e0c31}&js_code={$temporaryCode}&grant_type=authorization_code";
+        $response = Http::get($url);
+        if ($response->successful()) {
+            $data = $response->json();
+            $openId = $data['openid'];
+        }else{
+            return response()->json([
+                'status' => 'error',
+                'message' => '微信登录失败'
+            ],500);
+        }
+        // 判断数据库里面是不是有这个openId
+        $exists = MemberBinds::where('open_id', $openId)->exists();
+        if (!$exists) {
+            //创建新用户
+            $newUser = Members::create([
+                'username' => "新用户",
+                'password' => '123456',//默认密码
+                "locked" => "0",
+            ]);
+            $newUserId =$newUser->id;//取出新用户的id
+            //向member——binds插入新添加的用户
+            MemberBinds::create([
+                'open_id' => $openId,
+                'user_id' => $newUserId,
+            ]);
+            //生成token
+            $token = JWTAuth::attempt($newUserId,$openId);
+
+            //返回token（携带用户信息，openid）
+            return response()->json([
+                'status' => 'success',
+                'message' => '微信登录成功',
+                'token' => $token,
+            ],200);
+        }else{
+            //拿出用户的id
+            $UserId = $exists->user_id;
+            //生成token
+            $token = JWTAuth::attempt($UserId,$openId);
+            //返回token（携带用户信息，openid）
+            return response()->json([
+                'status' => 'success',
+                'message' => '微信登录成功',
+                'token' => $token,
+            ],200);
+        }
+
     }
 }
