@@ -35,4 +35,3 @@ Route::get('carBrandSeries/optionList/{brandId}',[CarBrandController::class,'fin
     ->where('brandId','[0-9]+');
 //微信登录
 Route::get('/user/login/wechatAuthorization/{$temporaryCode}',[MemberController::class, 'wechatLogin']);
-

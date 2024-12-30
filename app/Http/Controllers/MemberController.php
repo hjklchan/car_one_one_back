@@ -118,6 +118,14 @@ class MemberController extends Controller
     //用户的微信的登录
     public function wechatLogin($temporaryCode)
     {
+        // 相关配置通过 config 帮助函数获取
+        // 路径为 wechat.*
+        // 查阅 config/wechat.php
+        // Test ok
+        $appId = config("wechat.defaults.app_id");
+        $secret = config("wechat.defaults.secret");
+        Log::debug("wechat configs: ", [$appId, $secret]);
+
         //生成open_id
         $url = "https://api.weixin.qq.com/sns/jscode2session?appid={wxcc01f485388c335b}&secret={bc2b97a7451a259f1ce7779dd24e0c31}&js_code={$temporaryCode}&grant_type=authorization_code";
         $response = Http::get($url);
