@@ -116,14 +116,19 @@ class MemberController extends Controller
     }
 
     //用户的微信的登录
-    public function wechatLogin($temporaryCode)
+    public function wechatLogin(Request $request)
     {
+        $code = $request->input("code");
+        Log::debug("123123123213213", [$code]);
+
         //生成open_id
-        $url = "https://api.weixin.qq.com/sns/jscode2session?appid={wxcc01f485388c335b}&secret={bc2b97a7451a259f1ce7779dd24e0c31}&js_code={$temporaryCode}&grant_type=authorization_code";
-        $response = Http::get($url);
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid=wxcc01f485388c335b&secret=bd964ec44910eaa93a0b55cff78468a0&js_code={$code}&grant_type=authorization_code";
+        $response = Http::withOptions(['verify' => false])->get($url);
+
         if ($response->successful()) {
             $data = $response->json();
             $openId = $data['openid'];
+            Log::debug("res:", [$openId]);
         }else{
             return response()->json([
                 'status' => 'error',
@@ -144,9 +149,11 @@ class MemberController extends Controller
             MemberBinds::create([
                 'open_id' => $openId,
                 'user_id' => $newUserId,
+                'session_key' => $data['session_key'],
             ]);
+
             //生成token
-            $token = JWTAuth::attempt($newUserId,$openId);
+            $token = JWTAuth::fromUser($newUser);
 
             //返回token（携带用户信息，openid）
             return response()->json([
@@ -155,11 +162,14 @@ class MemberController extends Controller
                 'token' => $token,
             ],200);
         }else{
-            //拿出用户的id
-            $UserId = $exists->user_id;
+            //拿出用户的
+            $UserId = MemberBinds::where('open_id', $openId)->value('user_id');
+            $User = Members::find($UserId);
+            Log::debug("User:", [$User]);
             //生成token
-            $token = JWTAuth::attempt($UserId,$openId);
-            //返回token（携带用户信息，openid）
+            $token = JWTAuth::fromUser($User);//这个JWTAuth::attempt要的是数组
+            Log::debug("token:", [$token]);
+            //返回token（携带用户信息）
             return response()->json([
                 'status' => 'success',
                 'message' => '微信登录成功',

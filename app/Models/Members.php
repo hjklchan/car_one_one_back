@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-
-class Members extends Model implements JWTSubject
+use Illuminate\Foundation\Auth\User as Authenticatable;
+class Members extends Authenticatable implements JWTSubject
 {
     use Notifiable;
     protected $table = 'members';

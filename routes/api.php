@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CarBrandController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\PartnerStoresController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,5 +35,9 @@ Route::get('/carBrandSeries/optionList',[CarBrandController::class,'findAll']);
 Route::get('carBrandSeries/optionList/{brandId}',[CarBrandController::class,'findSeries'])
     ->where('brandId','[0-9]+');
 //微信登录
-Route::get('/user/login/wechatAuthorization/{$temporaryCode}',[MemberController::class, 'wechatLogin']);
+Route::get('/user/login/wechatAuthorization',[MemberController::class, 'wechatLogin']);
+
+//获取附近门店
+Route::get('/partnerStore/list',[PartnerStoresController::class,'getStores']);
+
 
