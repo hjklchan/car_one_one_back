@@ -108,10 +108,18 @@ class MemberController extends Controller
     // 获取所有用户信息
     public function getUserInfo()
     {
-        $user = Members::find();
+        // FIXME - 未携带 Token 时依然执行
+        // FIXME - 因为未携带 Token 是拿不到用户实例
+        $user = auth()->user();
+
+        $data = [
+            "username" => $user->username,
+            "avatarUrl" => $user->avatar_url,
+        ];
+
         return response()->json([
             'status' => 'success',
-            'data' => $user
+            'data' => $data,
         ],200);
     }
 

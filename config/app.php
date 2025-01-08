@@ -181,8 +181,10 @@ return [
         Overtrue\LaravelWeChat\ServiceProvider::class,
         Overtrue\LaravelSocialite\ServiceProvider::class,
 
-
-
+        /**
+         * Jwt Auth
+         */
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     ],
 
     /*

@@ -30,7 +30,7 @@ Route::post('/member/login',[MemberController::class, 'phoneLogin']);
 //获取所有用户信息
 Route::get('/user/profile',[MemberController::class, 'getUserInfo']);
 //获取汽车品牌列表
-Route::get('/carBrandSeries/optionList',[CarBrandController::class,'findAll']);
+Route::get('/carBrand/optionList',[CarBrandController::class,'findAll']);
 //获取汽车品牌旗下的系列
 Route::get('carBrandSeries/optionList/{brandId}',[CarBrandController::class,'findSeries'])
     ->where('brandId','[0-9]+');
