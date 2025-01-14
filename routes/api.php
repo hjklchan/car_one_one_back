@@ -3,7 +3,6 @@
 use App\Http\Controllers\CarBrandController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PartnerStoresController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,4 +39,5 @@ Route::get('/user/login/wechatAuthorization',[MemberController::class, 'wechatLo
 //获取附近门店
 Route::get('/partnerStore/list',[PartnerStoresController::class,'getStores']);
 
-
+// 处理路由不存在
+Route::fallback(ResponseHelper\apiRouteNotFound());
